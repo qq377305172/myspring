@@ -7,9 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * @author Admin
- * @title: LoginRequired
- * @projectName demo
- * @description: TODO
  * @date 2020/3/14 13:17
  */
 @Target(ElementType.METHOD)
