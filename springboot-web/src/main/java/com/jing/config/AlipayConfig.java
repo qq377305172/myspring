@@ -10,8 +10,8 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  */
-@Configuration
-@PropertySource("classpath:alipay.properties")
+//@Configuration
+//@PropertySource("classpath:alipay.properties")
 public class AlipayConfig {
     @Value("${alipay_url}")
     private String alipay_url;

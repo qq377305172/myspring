@@ -1,9 +1,10 @@
 package com.jing.controller;
 
-import com.example.demo.util.ActiveMQUtil;
-import com.example.demo.util.RedisUtil;
-import org.redisson.api.RSemaphore;
-import org.redisson.api.RedissonClient;
+import cn.hutool.core.util.StrUtil;
+import com.jing.config.JedisConfig;
+import org.redisson.Redisson;
+import org.redisson.api.*;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,19 +20,37 @@ import java.util.List;
 
 /**
  * @author Admin
- * @title: SecKillController
- * @projectName demo
- * @description: TODO
  * @date 2020/3/28 15:06
  */
 @Controller
 public class SecKillController {
     @Resource
-    private RedisUtil redisUtil;
+    private JedisConfig jedisConfig;
     @Resource
     private ActiveMQUtil activeMQUtil;
     @Resource
     private RedissonClient redissonClient;
+    @Resource
+    private Redisson redisson;
+
+    @Resource
+    private StringRedisTemplate redisTemplate;
+
+    public void test() {
+        String lockKey = "lockKey";
+        RLock lock = redisson.getLock(lockKey);
+        try {
+            lock.lock();
+            String stockStr = redisTemplate.opsForValue().get("stock");
+            int stock = StrUtil.isBlank(stockStr) ? 0 : Integer.parseInt(stockStr);
+            if (stock > 0) {
+                stock--;
+                redisTemplate.opsForValue().set("stock", String.valueOf(stock));
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
 
     @RequestMapping("/kill")
     @ResponseBody
@@ -45,7 +64,7 @@ public class SecKillController {
             //抢购失败
         }
         //随机
-        Jedis jedis = redisUtil.getJedis();
+        Jedis jedis = jedisConfig.redisPoolFactory().getResource();
         String watch = jedis.watch("");
         Transaction tx = jedis.multi();
         tx.incrBy("", -1);

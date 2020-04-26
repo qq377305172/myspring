@@ -6,9 +6,6 @@ import java.util.Map;
 
 /**
  * @author Admin
- * @title: JwtUtil
- * @projectName demo
- * @description: TODO
  * @date 2020/3/14 14:23
  */
 public class JwtUtil {

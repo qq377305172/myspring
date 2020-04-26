@@ -1,6 +1,6 @@
 server:
   port: 80
-
+  max-http-header-size: 102400
 #是否开启apidoc
 #apidoc: true
 mybatis:
@@ -11,37 +11,26 @@ mybatis:
 logging:
   level.root: info
   config: classpath:logback-spring.xml
-  file: logs
+  file:
+    path: logs
 spring:
   datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    # 基本属性 url、user、password
+    url: jdbc:mysql://127.0.0.1:3306/gmall?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: 123456
+    #   数据源其他配置
     druid:
-      driver-class-name: com.mysql.jdbc.Driver
-      # 基本属性 url、user、password
-      url: jdbc:mysql://127.0.0.1:3306/gmall?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-      username: root
-      password:
-      # 配置初始化大小、最小、最大 (通常来说，只需要修改initialSize、minIdle、maxActive)
-      initial-size: 1
-      min-idle: 1
-      max-active: 20
-      # 配置获取连接等待超时的时间
-      max-wait: 60000
-      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-      time-between-eviction-runs-millis:  60000
-      # 配置一个连接在池中最小生存的时间，单位是毫秒
-      min-evictable-idle-time-millis: 300000
-      validation-query: select 'x'
-      test-while-idle: true
-      test-on-borrow: false
-      test-on-return: false
-      # 打开PSCache，并且指定每个连接上PSCache的大小
-      pool-prepared-statements: true
-      max-pool-prepared-statement-per-connection-size: 20
-      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-      filters: stat,wall,slf4j
-      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-      #useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
   jpa:
     show-sql: true
   jackson:
@@ -75,26 +64,43 @@ spring:
       ALLOW_SINGLE_QUOTES: true # 是否允许出现单引号,默认false
     # 枚举类JsonGenerator.Feature枚举类中的枚举属性为key，值为boolean设置jackson JsonGenerator特性，一般无需设置默认即可
     # JsonGenerator在jackson中负责编写json内容,具体特性请看JsonGenerator.Feature
-  http:
-    multipart:
-      enabled: true
-      max-file-size: 10MB
-      max-request-size: 10MB
-  thymeleaf:
-    cache: false #    关闭thymeleaf缓存,热部署
-    mode: LEGACYHTML5  #    松校验
-    content-type: text/html
+  #redis缓存
   redis:
+    #redis数据库索引，默认是0
+    database: 0
+    #redis服务器地址，这里用本地的redis
     host: 127.0.0.1
+    # Redis服务器连接密码（默认为空）
+    password:
+    #redis服务器连接端口，默认是6379
     port: 6379
-    pool:
-      max-active: 8 # 连接池最大连接数（使用负值表示没有限制）
-      max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
-      max-idle: 300 # 连接池中的最大空闲连接
-      min-idle: 0 # 连接池中的最小空闲连接
-    timeout: -1
-  elasticsearch:
-    jest:
-      uris: http://127.0.0.1:9200
+    # 连接超时时间（毫秒）
+    timeout: 1000ms
+    jedis:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制
+        max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 0
   activemq:
     broker-url: tcp://127.0.0.1:61616
+    user: admin
+    password: admin
+    close-timeout: 15s   # 在考虑结束之前等待的时间
+    in-memory: true      # 默认代理URL是否应该在内存中。如果指定了显式代理，则忽略此值。
+    non-blocking-redelivery: false  # 是否在回滚回滚消息之前停止消息传递。这意味着当启用此命令时，消息顺序不会被保留。
+    send-timeout: 0     # 等待消息发送响应的时间。设置为0等待永远。
+  elasticsearch:
+    jest:
+      proxy:
+        host: 127.0.0.1
+        port: 9002
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1024MB #单个文件的配置最大为50Mb
+      max-request-size: 1024MB #单次请求上传总文件的最大值

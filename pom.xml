@@ -23,7 +23,7 @@
         <log4j.version>1.2.17</log4j.version>
         <lombok.version>1.18.12</lombok.version>
         <mysql.version>8.0.18</mysql.version>
-        <druid.version>1.1.16</druid.version>
+        <druid.version>1.1.4</druid.version>
         <druid.spring.boot.starter.version>1.1.10</druid.spring.boot.starter.version>
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
         <spring.cloud.version>Hoxton.SR1</spring.cloud.version>
@@ -34,12 +34,47 @@
         <swagger2.version>2.9.2</swagger2.version>
         <swagger-ui.version>2.9.2</swagger-ui.version>
         <tk.mybatis.version>2.1.5</tk.mybatis.version>
-        <com.github.pagehelper.version>1.2.13</com.github.pagehelper.version>
+        <pagehelper.version>1.2.13</pagehelper.version>
+        <redission.version>3.12.0</redission.version>
+        <jedis.version>3.1.0</jedis.version>
+        <jjwt.version>0.9.0</jjwt.version>
     </properties>
 
     <!--子模块继承后,提供作用:锁定版本+子module不用groupId和version-->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>0.9.0</version>
+            </dependency>
+            <!-- redis客户端 -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+            <!-- log -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.30</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redission.version}</version>
+            </dependency>
             <dependency>
                 <groupId>tk.mybatis</groupId>
                 <artifactId>mapper-spring-boot-starter</artifactId>
@@ -60,7 +95,7 @@
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${com.github.pagehelper.version}</version>
+                <version>${pagehelper.version}</version>
             </dependency>
             <!--springboot 2.2.2-->
             <dependency>

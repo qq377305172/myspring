@@ -11,9 +11,6 @@ import java.util.concurrent.Executor;
 
 /**
  * @author Admin
- * @title: AsyncTaskConfig
- * @projectName demo
- * @description: TODO
  * @date 2020/3/28 10:10
  */
 @Configuration
