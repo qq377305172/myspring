@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>springboot-web</module>
+        <module>spring-circular-dependence</module>
     </modules>
     <packaging>pom</packaging>
     <description>父工程,统一管理jar包版本</description>
@@ -43,11 +44,11 @@
     <!--子模块继承后,提供作用:锁定版本+子module不用groupId和version-->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
-                <version>0.9.0</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>io.jsonwebtoken</groupId>-->
+<!--                <artifactId>jjwt</artifactId>-->
+<!--                <version>0.9.0</version>-->
+<!--            </dependency>-->
             <!-- redis客户端 -->
             <dependency>
                 <groupId>redis.clients</groupId>
